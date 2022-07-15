@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -22,6 +24,29 @@ public class Category {
         strategy = GenerationType.SEQUENCE,
         generator = "category_sequence"
     )
-    private int id;
+    private Integer id;
     private String name;
+
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(
+                    name = "category_id",
+                    referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "product_id",
+                    referencedColumnName = "id"
+            )
+
+    )
+    private List<Product> products;
+
+    public void addProducts(Product product){
+        if(products == null) products = new ArrayList<>();
+        products.add(product);
+    }
+
 }
